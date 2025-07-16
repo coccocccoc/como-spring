@@ -48,18 +48,18 @@ public class User {
 	@Column(nullable = true)
 	int age; // 나이
 	
-	@ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(
-        name = "user_language",
-        joinColumns = @JoinColumn(name = "user_id")
-    )
-    @Column(name = "language", length = 30)
-    private List<String> languages = new ArrayList<>(); // 관심 언어
+//	@ElementCollection(fetch = FetchType.LAZY)
+//    @CollectionTable(
+//        name = "user_language",
+//        joinColumns = @JoinColumn(name = "user_id")
+//    )
+//    @Column(name = "language", length = 30)
+//    private List<String> languages = new ArrayList<>(); // 관심 언어
 	
 	@Column(nullable = false, length = 20)
 	String role; // 권한
 	
-	enum provider{
+	public enum provider{
 		KAKAO, GOOGLE, NAVER
 	}
 	

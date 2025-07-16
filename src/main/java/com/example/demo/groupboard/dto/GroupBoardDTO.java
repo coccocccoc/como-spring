@@ -21,11 +21,11 @@ import lombok.ToString;
 @Builder
 public class GroupBoardDTO {
 		
-	StudyGroup groupId;
+	int groupId;
 	
-	User userId;
+	int userId;
 	
-	GroupBoard.cat category;
+	String category;
 
 	String title;
 	

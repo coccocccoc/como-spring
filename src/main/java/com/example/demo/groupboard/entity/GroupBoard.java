@@ -53,7 +53,7 @@ public class GroupBoard {
 	@Column(nullable = false, length = 20)
 	cat category; // 카테고리
 	
-	@Column(nullable = false, length = 100)
+	@Column(nullable = false, length = 225)
 	String title; // 제목
 	
 	@Column(nullable = false, columnDefinition = "TEXT")
