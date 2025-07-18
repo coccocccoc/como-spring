@@ -2,6 +2,8 @@ package com.example.demo.groupboard.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.example.demo.studygroup.entity.StudyGroup;
 import com.example.demo.user.entity.User;
 
@@ -59,6 +61,8 @@ public class GroupBoard {
 	@Column(nullable = false, columnDefinition = "TEXT")
 	String content; // 본문
 	
+	@CreationTimestamp
+	@Column(updatable = false)
 	LocalDateTime regDate; // 작성 일시
 
 }

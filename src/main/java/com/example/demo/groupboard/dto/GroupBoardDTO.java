@@ -20,8 +20,10 @@ import lombok.ToString;
 @ToString
 @Builder
 public class GroupBoardDTO {
+	
+	int groupPostId;
 		
-	int groupId;
+	int groupId; 
 	
 	int userId;
 	
@@ -32,4 +34,6 @@ public class GroupBoardDTO {
 	String content;
 	
 	LocalDateTime regDate;
+	
+	String nickname;
 }

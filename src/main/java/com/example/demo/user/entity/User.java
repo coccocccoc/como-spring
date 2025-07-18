@@ -39,7 +39,7 @@ public class User {
 	@Column(nullable = false, length = 100)
 	String socialId; // 소셜 ID
 	 
-	@Column(nullable = true, length = 20)
+	@Column(nullable = false, length = 20)
 	String nickname; // 닉네임
 	
 	@Column(nullable = true, length = 50)

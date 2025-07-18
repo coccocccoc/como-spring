@@ -13,6 +13,8 @@ import com.example.demo.groupboard.repository.GroupBoardRepository;
 import com.example.demo.studygroup.repository.StudyGroupRepository;
 import com.example.demo.user.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class GroupBoardServiceImpl implements GroupBoardService {
 	
@@ -56,20 +58,20 @@ public class GroupBoardServiceImpl implements GroupBoardService {
 		return toGroupBoardDTO(post);
 	}
 
-    @Override
-    public void updateGroupPost(int postId, GroupBoardDTO dto) {
-        GroupBoard post = groupBoardRepo.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물 없음"));
+	@Transactional
+	@Override
+	public void updateGroupPost(int postId, GroupBoardDTO dto) {
+	    GroupBoard post = groupBoardRepo.findById(postId)
+	            .orElseThrow(() -> new IllegalArgumentException("게시물 없음"));
 
-        if (post.getUserId().getUserId() != dto.getUserId()) {
-            throw new IllegalStateException("수정 권한이 없습니다.");
-        }
+	    post.setTitle(dto.getTitle());
+	    post.setContent(dto.getContent());
 
-        post.setTitle(dto.getTitle());
-        post.setContent(dto.getContent());
-        post.setCategory(cat.valueOf(dto.getCategory())); // String → enum 변환
-        groupBoardRepo.save(post);
-    }
+	    // 문자열 → enum 변환 (예: "자유방")
+	    post.setCategory(cat.valueOf(dto.getCategory()));
+
+	    groupBoardRepo.save(post); // 명시적으로 저장
+	}
 
     @Override
     public void deleteGroupPost(int postId, Integer requesterId) {
@@ -85,10 +87,10 @@ public class GroupBoardServiceImpl implements GroupBoardService {
 	
 	@Override
 	public void validateUserMembership(int groupId, int userId) {
-	    boolean isMember = studyGroupMemberRepo.existsByGroup_GroupIdAndUser_UserId(groupId, userId);
-	    if (!isMember) {
-	        throw new IllegalStateException("이 사용자는 해당 그룹에 가입되어 있지 않습니다.");
-	    }
+//	    boolean isMember = studyGroupMemberRepo.existsByGroup_GroupIdAndUser_UserId(groupId, userId);
+//	    if (!isMember) {
+//	        throw new IllegalStateException("이 사용자는 해당 그룹에 가입되어 있지 않습니다.");
+//	    }
 	}
 
 }
