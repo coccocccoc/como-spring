@@ -1,4 +1,4 @@
-package com.example.demo.groupboard.dto;
+package com.example.demo.comment.dto;
 
 import java.time.LocalDateTime;
 
@@ -15,21 +15,18 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class GroupBoardDTO {
+public class CommentDTO {
+	
+	int commentId;
 	
 	int groupPostId;
-		
-	int groupId; 
 	
 	int userId;
 	
-	String category;
-
-	String title;
+	String nickname;
 	
 	String content;
 	
 	LocalDateTime regDate;
 	
-	String nickname;
 }
