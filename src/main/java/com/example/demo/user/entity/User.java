@@ -57,8 +57,8 @@ public class User {
 //    private List<String> languages = new ArrayList<>(); // 관심 언어
 	
 	@Column(nullable = false, length = 20)
-	String role; // 권한
-	
+	String role; // 권한 (유저/관리자)
+
 	public enum provider{
 		KAKAO, GOOGLE, NAVER
 	}
