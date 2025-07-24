@@ -42,20 +42,6 @@ public class User {
 	@Column(nullable = false, length = 20)
 	String nickname; // 닉네임
 	
-	@Column(nullable = true, length = 50)
-	String region; // 지역
-	
-	@Column(nullable = true)
-	int age; // 나이
-	
-//	@ElementCollection(fetch = FetchType.LAZY)
-//    @CollectionTable(
-//        name = "user_language",
-//        joinColumns = @JoinColumn(name = "user_id")
-//    )
-//    @Column(name = "language", length = 30)
-//    private List<String> languages = new ArrayList<>(); // 관심 언어
-	
 	@Column(nullable = false, length = 20)
 	String role; // 권한 (유저/관리자)
 

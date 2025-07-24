@@ -43,8 +43,6 @@ public class CommentRepoTest {
 	    User user = User.builder()
                 .socialId("test_social_id")
                 .nickname("테스트유저")
-                .region("서울")
-                .age(25)
                 .role("USER")
                 .socialProvider(provider.KAKAO)
                 .build();
