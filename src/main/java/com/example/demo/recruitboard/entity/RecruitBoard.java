@@ -55,6 +55,7 @@ public class RecruitBoard {
 	@Column(nullable = false, columnDefinition = "TEXT")
 	String content; // 본문
 	
+	@CreationTimestamp
 	@Column(updatable = false)
 	LocalDateTime regDate; // 작성 일시
 	

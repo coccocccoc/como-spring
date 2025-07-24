@@ -25,7 +25,7 @@ public class TechStack {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    int techStackId;
 
     @Column(nullable = false, unique = true, length = 50)
     String name;  // Java, Spring, React 등

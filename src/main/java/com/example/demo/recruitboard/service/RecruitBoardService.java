@@ -1,0 +1,63 @@
+package com.example.demo.recruitboard.service;
+
+import java.nio.file.AccessDeniedException;
+import java.util.List;
+
+import com.example.demo.recruitboard.dto.RecruitBoardDTO;
+import com.example.demo.recruitboard.entity.RecruitBoard;
+import com.example.demo.techstack.entity.TechStack;
+import com.example.demo.user.entity.User;
+
+public interface RecruitBoardService {
+	
+	// 모집글 등록
+    RecruitBoardDTO createRecruitBoard(RecruitBoardDTO dto);
+
+    // 모집글 전체 조회
+    List<RecruitBoardDTO> getAllRecruitBoards();
+
+    // 모집글 상세 조회
+    RecruitBoardDTO getRecruitBoardById(int recruitPostId);
+
+    // 모집글 수정
+    RecruitBoardDTO updateRecruitBoard(int recruitPostId, RecruitBoardDTO dto) throws AccessDeniedException;
+
+    // 모집글 삭제
+    void deleteRecruitBoard(int recruitPostId, int requesterId) throws AccessDeniedException;
+    
+    default RecruitBoardDTO toRecruitBoardDTO(RecruitBoard entity) {
+        return RecruitBoardDTO.builder()
+                .recruitPostId(entity.getRecruitPostId())
+                .userId(entity.getWriter().getUserId())
+                .title(entity.getTitle())
+                .content(entity.getContent())
+                .regDate(entity.getRegDate())
+                .capacity(entity.getCapacity())
+                .mode(entity.getMode())
+                .startDate(entity.getStartDate())
+                .endDate(entity.getEndDate())
+                .deadline(entity.getDeadline())
+                .techStackIds(entity.getTechStacks().stream()
+                        .map(TechStack::getTechStackId)
+                        .toList())
+                .techStackNames(entity.getTechStacks().stream()
+                        .map(TechStack::getName)
+                        .toList())
+                .build();
+    }
+
+    default RecruitBoard toRecruitBoardEntity(RecruitBoardDTO dto) {
+        return RecruitBoard.builder()
+                .recruitPostId(dto.getRecruitPostId())
+                .writer(User.builder().userId(dto.getUserId()).build())
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .capacity(dto.getCapacity())
+                .mode(dto.getMode())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .deadline(dto.getDeadline())
+                // techStacks는 ServiceImpl에서 따로 설정
+                .build();
+    }
+}
