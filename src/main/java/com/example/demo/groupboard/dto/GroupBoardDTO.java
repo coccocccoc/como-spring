@@ -21,7 +21,7 @@ public class GroupBoardDTO {
 		
 	int groupId; 
 	
-	int userId;
+	long userId;
 	
 	String category;
 

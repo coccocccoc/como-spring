@@ -28,7 +28,7 @@ public interface GroupBoardService {
 	void deleteGroupPost(int postId, Integer requesterId);
 	
 	// 유저가 해당 그룹에 가입했는지 확인
-	void validateUserMembership(int groupId, int userId);
+	void validateUserMembership(int groupId, long userId);
 	
 	// DTO → Entity
 	default GroupBoard toGroupBoardEntity(GroupBoardDTO dto) {

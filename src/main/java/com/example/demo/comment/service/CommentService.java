@@ -9,7 +9,7 @@ import com.example.demo.user.entity.User;
 public interface CommentService {
 	
 	// 댓글 등록
-	CommentDTO registerComment(int userId, int groupPostId, String content);
+	CommentDTO registerComment(long userId, int groupPostId, String content);
 
 	// 특정 게시물에 대한 댓글 목록 조회
 	List<CommentDTO> getCommentsByPostId(int groupPostId);

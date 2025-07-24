@@ -33,7 +33,7 @@ public class GroupBoardServiceImpl implements GroupBoardService {
     @Override
     public int registerGroupPost(GroupBoardDTO dto) {
         int groupId = dto.getGroupId();
-        int userId = dto.getUserId();
+        long userId = dto.getUserId();
 
         validateUserMembership(groupId, userId);
 
@@ -86,7 +86,7 @@ public class GroupBoardServiceImpl implements GroupBoardService {
     }
 	
 	@Override
-	public void validateUserMembership(int groupId, int userId) {
+	public void validateUserMembership(int groupId, long userId) {
 //	    boolean isMember = studyGroupMemberRepo.existsByGroup_GroupIdAndUser_UserId(groupId, userId);
 //	    if (!isMember) {
 //	        throw new IllegalStateException("이 사용자는 해당 그룹에 가입되어 있지 않습니다.");

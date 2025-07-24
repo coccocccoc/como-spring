@@ -21,7 +21,7 @@ public class CommentDTO {
 	
 	int groupPostId;
 	
-	int userId;
+	long userId;
 	
 	String nickname;
 	

@@ -3,6 +3,9 @@ package com.example.demo.user.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.demo.message.entity.Message;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -15,6 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,26 +35,34 @@ import lombok.ToString;
 @ToString
 @Builder
 public class User {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int userId; // 유저 ID
-	
-	@Column(nullable = false, length = 100)
-	String socialId; // 소셜 ID
-	 
-	@Column(nullable = false, length = 20)
-	String nickname; // 닉네임
-	
-	@Column(nullable = false, length = 20)
-	String role; // 권한 (유저/관리자)
 
-	public enum provider{
-		KAKAO, GOOGLE, NAVER
-	}
-	
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, length = 20)
-	provider socialProvider; // 소셜 api 제공자
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   long userId; // 유저 ID
+   
+   @Column(nullable = false, length = 100)
+   String socialId; // 소셜 ID
+    
+   @Column(nullable = true, length = 20)
+   String nickname; // 닉네임
+   
+   @Column(nullable = false, length = 20)
+   String role; // 권한
+   
+   public enum provider{
+      KAKAO, GOOGLE, NAVER
+   }
+   
+   @Enumerated(EnumType.STRING)
+   @Column(nullable = false, length = 20)
+   provider socialProvider;
+   
+   //보낸 쪽지 목록
+   @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Message> sentMessages = new ArrayList<>();
+
+   // ✅ 받은 쪽지 목록
+   @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Message> receivedMessages = new ArrayList<>();
 
 }

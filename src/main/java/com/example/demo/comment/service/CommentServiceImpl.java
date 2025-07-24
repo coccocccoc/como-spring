@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
 	GroupBoardRepository groupBoardRepo;
 
 	@Override
-	public CommentDTO registerComment(int userId, int groupPostId, String content) {
+	public CommentDTO registerComment(long userId, int groupPostId, String content) {
 
 	    if (content == null || content.trim().isEmpty()) {
 	        System.out.println("[ERROR] 댓글 내용이 null 또는 빈 문자열입니다.");
