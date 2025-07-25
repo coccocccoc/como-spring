@@ -23,6 +23,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -87,4 +88,7 @@ public class RecruitBoard {
     )
     List<TechStack> techStacks = new ArrayList<>(); // 기술 스택
 	
+    @OneToOne
+    @JoinColumn(name = "group_id")
+    StudyGroup studyGroup;
 }

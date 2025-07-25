@@ -27,6 +27,6 @@ public class TechStack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int techStackId;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = true, length = 100)
     String name;  // Java, Spring, React 등
 }

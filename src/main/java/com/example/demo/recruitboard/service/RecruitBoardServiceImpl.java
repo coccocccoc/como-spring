@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.example.demo.recruitboard.dto.RecruitBoardDTO;
 import com.example.demo.recruitboard.entity.RecruitBoard;
 import com.example.demo.recruitboard.repository.RecruitBoardRepository;
+import com.example.demo.studygroup.entity.StudyGroup;
+import com.example.demo.studygroup.service.StudyGroupService;
 import com.example.demo.techstack.entity.TechStack;
 import com.example.demo.techstack.repository.TechStackRepository;
 import com.example.demo.user.entity.User;
@@ -29,25 +31,32 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 	@Autowired
 	TechStackRepository techStackRepo;
 	
+	@Autowired
+	StudyGroupService studyGroupService;
+	
 	// 모집글 등록
 	@Override
     @Transactional
     public RecruitBoardDTO createRecruitBoard(RecruitBoardDTO dto) {
-        // 작성자 유저 가져오기
-        User writer = userRepo.findById(dto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+	    // 1. 작성자 유저 가져오기
+	    User writer = userRepo.findById(dto.getUserId())
+	            .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
 
-        // 기술스택 가져오기
-        List<TechStack> techStacks = techStackRepo.findAllById(dto.getTechStackIds());
+	    // 2. 기술스택 가져오기
+	    List<TechStack> techStacks = techStackRepo.findAllById(dto.getTechStackIds());
 
-        // DTO -> Entity
-        RecruitBoard board = toRecruitBoardEntity(dto);
-        board.setWriter(writer);
-        board.setTechStacks(techStacks);
+	    // 3. DTO -> Entity
+	    RecruitBoard board = toRecruitBoardEntity(dto);
+	    board.setWriter(writer);
+	    board.setTechStacks(techStacks);
 
-        // 저장
-        RecruitBoard saved = recruitBoardRepo.save(board);
-        return toRecruitBoardDTO(saved);
+	    // 4. 스터디 그룹 생성
+	    StudyGroup studyGroup = studyGroupService.createFromRecruitBoard(dto);
+	    board.setStudyGroup(studyGroup); // 양방향 연결
+
+	    // 5. 저장
+	    RecruitBoard saved = recruitBoardRepo.save(board);
+	    return toRecruitBoardDTO(saved);
     }
 
 	// 모집글 전체 조회
@@ -106,6 +115,15 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 
 	    recruitBoardRepo.delete(board);
 	}
+	
+	// 서비스 구현체
+	@Override
+	public RecruitBoardDTO getRecruitBoardByGroupId(int groupId) {
+	    return recruitBoardRepo.findByGroupId(groupId)
+	        .map(this::toRecruitBoardDTO)
+	        .orElseThrow(() -> new IllegalArgumentException("해당 그룹의 모집글을 찾을 수 없습니다."));
+	}
+
 
 
 }

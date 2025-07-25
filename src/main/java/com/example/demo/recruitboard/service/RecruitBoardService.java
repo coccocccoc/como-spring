@@ -25,10 +25,15 @@ public interface RecruitBoardService {
     // 모집글 삭제
     void deleteRecruitBoard(int recruitPostId, int requesterId) throws AccessDeniedException;
     
+    // 서비스 인터페이스
+    RecruitBoardDTO getRecruitBoardByGroupId(int groupId);
+
+    
     default RecruitBoardDTO toRecruitBoardDTO(RecruitBoard entity) {
         return RecruitBoardDTO.builder()
                 .recruitPostId(entity.getRecruitPostId())
                 .userId(entity.getWriter().getUserId())
+                .nickname(entity.getWriter().getNickname())
                 .title(entity.getTitle())
                 .content(entity.getContent())
                 .regDate(entity.getRegDate())

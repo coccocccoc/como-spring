@@ -1,5 +1,6 @@
 package com.example.demo.studygroup.entity;
 
+import com.example.demo.recruitboard.entity.RecruitBoard;
 import com.example.demo.user.entity.User;
 
 import jakarta.persistence.Column;
@@ -12,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,7 +40,7 @@ public class StudyGroup {
     @JoinColumn(name = "created_by", nullable = false)
     User createdBy;
 	
-    public enum Status {
+    public enum StudyStatus {
         모집중,
         활동중,
         종료
@@ -46,7 +48,9 @@ public class StudyGroup {
 	
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    Status status;
+    StudyStatus status;
 
+    @OneToOne(mappedBy = "studyGroup") // 주인이 아님
+    RecruitBoard recruitBoard;
 	
 }

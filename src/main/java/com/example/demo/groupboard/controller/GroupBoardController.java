@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class GroupBoardController {
 
     @Autowired
-    private GroupBoardService groupBoardService;
+    GroupBoardService groupBoardService;
 
     // 게시물 등록
     @PostMapping("/register")
