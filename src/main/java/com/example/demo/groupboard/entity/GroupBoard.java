@@ -41,7 +41,7 @@ public class GroupBoard {
 	
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
-    StudyGroup groupId; // 그룹 ID
+    StudyGroup studyGroup; // 그룹 ID
 	
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

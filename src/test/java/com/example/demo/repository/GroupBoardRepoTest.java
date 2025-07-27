@@ -55,7 +55,7 @@ public class GroupBoardRepoTest {
 
         // 3. 게시글 생성
         GroupBoard board = GroupBoard.builder()
-                .groupId(group) // FK로 연결
+                .studyGroup(group) // FK로 연결
                 .userId(user)   // 작성자
                 .category(cat.공지사항)
                 .title("스터디 모집합니다")
@@ -65,7 +65,7 @@ public class GroupBoardRepoTest {
         groupBoardRepo.save(board);
         
         GroupBoard board2 = GroupBoard.builder()
-                .groupId(group) // FK로 연결
+                .studyGroup(group) // FK로 연결
                 .userId(user)   // 작성자
                 .category(cat.인증방)
                 .title("인증합니다")

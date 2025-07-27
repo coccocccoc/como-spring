@@ -32,6 +32,7 @@ public interface RecruitBoardService {
     default RecruitBoardDTO toRecruitBoardDTO(RecruitBoard entity) {
         return RecruitBoardDTO.builder()
                 .recruitPostId(entity.getRecruitPostId())
+                .groupId(entity.getStudyGroup().getId())
                 .userId(entity.getWriter().getUserId())
                 .nickname(entity.getWriter().getNickname())
                 .title(entity.getTitle())

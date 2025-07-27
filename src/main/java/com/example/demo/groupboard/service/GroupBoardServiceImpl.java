@@ -47,7 +47,7 @@ public class GroupBoardServiceImpl implements GroupBoardService {
         int tempUserId = 1; // 실제 로그인 정보 적용 필요
         validateUserMembership(groupId, tempUserId);
 
-        return groupBoardRepo.findByGroupId_GroupId(groupId, pageable)
+        return groupBoardRepo.findByStudyGroup_Id(groupId, pageable)
                              .map(this::toGroupBoardDTO);
     }
 

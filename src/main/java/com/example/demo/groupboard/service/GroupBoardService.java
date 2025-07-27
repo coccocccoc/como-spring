@@ -34,7 +34,7 @@ public interface GroupBoardService {
 	default GroupBoard toGroupBoardEntity(GroupBoardDTO dto) {
 	    return GroupBoard.builder()
 	    		.groupPostId(dto.getGroupPostId())
-	            .groupId(StudyGroup.builder().groupId(dto.getGroupId()).build())
+	            .studyGroup(StudyGroup.builder().id(dto.getGroupId()).build())
 	            .userId(User.builder().userId(dto.getUserId()).build())
 	            .category(GroupBoard.cat.valueOf(dto.getCategory()))
 	            .title(dto.getTitle())
@@ -47,7 +47,7 @@ public interface GroupBoardService {
 	default GroupBoardDTO toGroupBoardDTO(GroupBoard entity) {
 	    return GroupBoardDTO.builder()
 	    		.groupPostId(entity.getGroupPostId())
-	            .groupId(entity.getGroupId().getGroupId())
+	            .groupId(entity.getStudyGroup().getId())
 	            .userId(entity.getUserId().getUserId())
 	            .category(entity.getCategory().name())
 	            .title(entity.getTitle())

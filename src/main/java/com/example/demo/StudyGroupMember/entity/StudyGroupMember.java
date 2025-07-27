@@ -14,12 +14,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 // 가입 관계 테이블
 // 스터디에 가입되어있는 회원들을 관리
 
 @Entity
 @Table(name = "study_group_member")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Builder
 public class StudyGroupMember {
 
     @Id
@@ -42,4 +54,10 @@ public class StudyGroupMember {
     @Column(name = "status", nullable = false, length = 30)
     status joinStatus;
 
+    @Column(nullable = true, length = 225)
+    String applyTitle;
+
+    @Column(nullable = true, columnDefinition = "TEXT")
+    String applyContent;
+    
 }

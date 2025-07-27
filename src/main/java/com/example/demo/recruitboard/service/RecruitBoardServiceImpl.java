@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.StudyGroupMember.entity.StudyGroupMember;
+import com.example.demo.StudyGroupMember.repository.StudyGroupMemberRepository;
 import com.example.demo.recruitboard.dto.RecruitBoardDTO;
 import com.example.demo.recruitboard.entity.RecruitBoard;
 import com.example.demo.recruitboard.repository.RecruitBoardRepository;
@@ -34,6 +36,9 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 	@Autowired
 	StudyGroupService studyGroupService;
 	
+	@Autowired
+	StudyGroupMemberRepository studyGroupMemberRepo;
+	
 	// 모집글 등록
 	@Override
     @Transactional
@@ -54,7 +59,14 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 	    StudyGroup studyGroup = studyGroupService.createFromRecruitBoard(dto);
 	    board.setStudyGroup(studyGroup); // 양방향 연결
 
-	    // 5. 저장
+	    // 5. 작성자를 StudyGroupMember로 등록
+	    StudyGroupMember member = new StudyGroupMember();
+	    member.setGroup(studyGroup);
+	    member.setUser(writer);
+	    member.setJoinStatus(StudyGroupMember.status.가입);
+	    studyGroupMemberRepo.save(member);
+
+	    // 6. 모집글 저장
 	    RecruitBoard saved = recruitBoardRepo.save(board);
 	    return toRecruitBoardDTO(saved);
     }
@@ -119,7 +131,7 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 	// 서비스 구현체
 	@Override
 	public RecruitBoardDTO getRecruitBoardByGroupId(int groupId) {
-	    return recruitBoardRepo.findByGroupId(groupId)
+	    return recruitBoardRepo.findByStudyGroup_Id(groupId)
 	        .map(this::toRecruitBoardDTO)
 	        .orElseThrow(() -> new IllegalArgumentException("해당 그룹의 모집글을 찾을 수 없습니다."));
 	}

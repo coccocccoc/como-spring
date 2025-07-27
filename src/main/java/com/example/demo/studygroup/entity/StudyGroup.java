@@ -34,7 +34,7 @@ public class StudyGroup {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int groupId;
+	int id; // 스터디그룹 아이디
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)

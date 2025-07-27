@@ -8,5 +8,5 @@ import com.example.demo.groupboard.entity.GroupBoard;
 public interface GroupBoardRepository extends JpaRepository<GroupBoard, Integer> {	
 
     // 특정 그룹 ID에 속한 게시글 목록 조회 (페이징 처리 포함)
-    Page<GroupBoard> findByGroupId_GroupId(int groupId, Pageable pageable);
+	Page<GroupBoard> findByStudyGroup_Id(int groupId, Pageable pageable);
 }

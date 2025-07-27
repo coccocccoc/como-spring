@@ -8,7 +8,6 @@ import com.example.demo.recruitboard.entity.RecruitBoard;
 
 public interface RecruitBoardRepository extends JpaRepository<RecruitBoard, Integer> {
 
-	Optional<RecruitBoard> findByGroupId(int groupId);
-
+	Optional<RecruitBoard> findByStudyGroup_Id(int groupId);
 	
 }
