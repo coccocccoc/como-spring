@@ -113,6 +113,21 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
     public int countApprovedMembers(int groupId) {
         return memberRepo.countByGroup_IdAndJoinStatus(groupId, StudyGroupMember.status.가입);
     }
+    
+    @Override
+    public List<StudyGroupDTO> getMyEndedStudies(Long userId) {
+        List<StudyGroupMember> members = memberRepo.findByUser_UserIdAndJoinStatus(userId, status.가입);
+
+        return members.stream()
+            .filter(member -> {
+                StudyGroup group = member.getGroup();
+                return group != null && group.getStatus() == StudyGroup.StudyStatus.종료;
+            })
+            .map(member -> toStudyGroupDTO(member.getGroup()))
+            .collect(Collectors.toList());
+    }
+
+
 
 
     @Override
@@ -129,7 +144,7 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
         	    .collect(Collectors.toList());
     }
 
-    private StudyGroupDTO toStudyGroupDTO(StudyGroup group) {
+    public StudyGroupDTO toStudyGroupDTO(StudyGroup group) {
         if (group == null || group.getRecruitBoard() == null) return null;
 
         return StudyGroupDTO.builder()

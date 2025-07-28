@@ -8,7 +8,7 @@ public interface StudyGroupService {
 
 	StudyGroup createFromRecruitBoard(RecruitBoardDTO dto);
 	
-	private StudyGroupDTO toStudyGroupDTO(StudyGroup group) {
+	default StudyGroupDTO toStudyGroupDTO(StudyGroup group) {
 	    if (group == null || group.getRecruitBoard() == null) return null;
 
 	    return StudyGroupDTO.builder()

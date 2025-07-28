@@ -23,4 +23,6 @@ public interface StudyGroupMemberRepository extends JpaRepository<StudyGroupMemb
 	// 해당 스터디 그룹의 상태가 가입인 회원 수 조회 
 	int countByGroup_IdAndJoinStatus(int groupId, StudyGroupMember.status status);
 
+	List<StudyGroupMember> findByUser_UserIdAndJoinStatus(Long userId, StudyGroupMember.status joinStatus);
+
 }
