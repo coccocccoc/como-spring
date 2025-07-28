@@ -72,7 +72,8 @@ public class KakaoOAuthService {
 
         return Map.of(
                 "token", jwt,
-                "nickname", user.getNickname()
+                "nickname", user.getNickname(),
+                "userId", String.valueOf(user.getUserId())
         );
     }
 

@@ -49,8 +49,10 @@ public interface RecruitBoardService {
                 .techStackNames(entity.getTechStacks().stream()
                         .map(TechStack::getName)
                         .toList())
+                .approvedMemberCount(0) // 임시 값. 실제 값은 구현체에서 세팅 필요
                 .build();
     }
+
 
     default RecruitBoard toRecruitBoardEntity(RecruitBoardDTO dto) {
         return RecruitBoard.builder()

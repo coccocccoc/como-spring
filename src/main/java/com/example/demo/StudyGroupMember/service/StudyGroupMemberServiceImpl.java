@@ -11,6 +11,7 @@ import com.example.demo.StudyGroupMember.dto.StudyGroupMemberDTO;
 import com.example.demo.StudyGroupMember.entity.StudyGroupMember;
 import com.example.demo.StudyGroupMember.entity.StudyGroupMember.status;
 import com.example.demo.StudyGroupMember.repository.StudyGroupMemberRepository;
+import com.example.demo.studygroup.dto.StudyGroupDTO;
 import com.example.demo.studygroup.entity.StudyGroup;
 import com.example.demo.studygroup.repository.StudyGroupRepository;
 import com.example.demo.user.entity.User;
@@ -102,7 +103,52 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
         
         return this.toDTO(member);
     }
+    
+    @Override
+    public boolean isUserJoinedGroup(int groupId, Long userId) {
+        return memberRepo.existsByGroup_IdAndUser_UserId(groupId, userId);
+    }
+    
+    @Override
+    public int countApprovedMembers(int groupId) {
+        return memberRepo.countByGroup_IdAndJoinStatus(groupId, StudyGroupMember.status.가입);
+    }
 
+
+    @Override
+    public List<StudyGroupDTO> getMyJoinedStudies(Long userId) {
+        List<StudyGroupMember> joinedMembers = memberRepo.findByUser_UserIdAndJoinStatus(userId, status.가입);
+
+        return joinedMembers.stream()
+        	    .map(StudyGroupMember::getGroup) 
+        	    .filter(group -> {
+        	        String status = group.getStatus().name();
+        	        return status.equals("모집중") || status.equals("활동중");
+        	    })
+        	    .map(this::toStudyGroupDTO)
+        	    .collect(Collectors.toList());
+    }
+
+    private StudyGroupDTO toStudyGroupDTO(StudyGroup group) {
+        if (group == null || group.getRecruitBoard() == null) return null;
+
+        return StudyGroupDTO.builder()
+            .groupId(group.getId())
+            .title(group.getRecruitBoard().getTitle())
+            .content(group.getRecruitBoard().getContent())
+            .nickname(group.getCreatedBy().getNickname())
+            .regDate(group.getRecruitBoard().getRegDate())
+            .capacity(group.getRecruitBoard().getCapacity())
+            .startDate(group.getRecruitBoard().getStartDate())
+            .endDate(group.getRecruitBoard().getEndDate())
+            .deadline(group.getRecruitBoard().getDeadline())
+            .mode(group.getRecruitBoard().getMode().toString())
+            .techStackNames(group.getRecruitBoard().getTechStacks().stream()
+                    .map(tech -> tech.getName())
+                    .toList())
+            .status(group.getStatus().name())
+            .build();
+    }
 
 
 }

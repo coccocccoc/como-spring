@@ -1,5 +1,7 @@
 package com.example.demo.login.util;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -27,6 +29,7 @@ public class JwtTokenProvider {
         hmacKey = Keys.hmacShaKeyFor(decodedKey);
     }
 
+    // ✅ 토큰 생성
     public String createToken(String userId) {
         return Jwts.builder()
                 .setSubject(userId)
@@ -35,4 +38,19 @@ public class JwtTokenProvider {
                 .signWith(hmacKey, SignatureAlgorithm.HS256)
                 .compact();
     }
+    
+    // ✅ 토큰에서 userId(subject) 추출
+    public String getUserIdFromToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(hmacKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject(); // subject == userId
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new RuntimeException("유효하지 않은 JWT 토큰입니다.", e);
+        }
+    }
+    
 }

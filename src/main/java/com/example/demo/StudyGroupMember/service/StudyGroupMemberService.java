@@ -6,6 +6,7 @@ import com.example.demo.StudyGroupMember.dto.StudyGroupMemberDTO;
 import com.example.demo.StudyGroupMember.entity.StudyGroupMember;
 import com.example.demo.studygroup.entity.StudyGroup;
 import com.example.demo.user.entity.User;
+import com.example.demo.studygroup.dto.StudyGroupDTO;
 
 public interface StudyGroupMemberService {
 	
@@ -18,6 +19,12 @@ public interface StudyGroupMemberService {
     void rejectMember(int memberId);
     
     public StudyGroupMemberDTO getApplication(int groupId, int userId);
+    
+    public List<StudyGroupDTO> getMyJoinedStudies(Long userId);
+    
+    boolean isUserJoinedGroup(int groupId, Long userId);
+    
+    int countApprovedMembers(int groupId);
 	
 	// Entity → DTO 변환
     default StudyGroupMemberDTO toDTO(StudyGroupMember entity) {

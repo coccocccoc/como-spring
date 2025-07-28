@@ -45,4 +45,6 @@ public class RecruitBoardDTO {
     List<Integer> techStackIds; // 기술 스택 ID 리스트
 
     List<String> techStackNames; // 기술 스택 이름 리스트 (조회 시)
+    
+    int approvedMemberCount; // 현재 승인된 멤버 수
 }

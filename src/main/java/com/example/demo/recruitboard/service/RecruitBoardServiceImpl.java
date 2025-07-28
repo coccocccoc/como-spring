@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.StudyGroupMember.entity.StudyGroupMember;
 import com.example.demo.StudyGroupMember.repository.StudyGroupMemberRepository;
+import com.example.demo.StudyGroupMember.service.StudyGroupMemberService;
 import com.example.demo.recruitboard.dto.RecruitBoardDTO;
 import com.example.demo.recruitboard.entity.RecruitBoard;
 import com.example.demo.recruitboard.repository.RecruitBoardRepository;
@@ -38,6 +39,9 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 	
 	@Autowired
 	StudyGroupMemberRepository studyGroupMemberRepo;
+	
+	@Autowired
+	StudyGroupMemberService studyGroupMemberService;
 	
 	// 모집글 등록
 	@Override
@@ -134,6 +138,20 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 	    return recruitBoardRepo.findByStudyGroup_Id(groupId)
 	        .map(this::toRecruitBoardDTO)
 	        .orElseThrow(() -> new IllegalArgumentException("해당 그룹의 모집글을 찾을 수 없습니다."));
+	}
+
+	
+	@Override
+	public RecruitBoardDTO toRecruitBoardDTO(RecruitBoard entity) {
+	    RecruitBoardDTO dto = RecruitBoardService.super.toRecruitBoardDTO(entity);
+	    if (entity.getStudyGroup() != null) {
+	        int count = studyGroupMemberRepo.countByGroup_IdAndJoinStatus(
+	                entity.getStudyGroup().getId(),
+	                StudyGroupMember.status.가입
+	        );
+	        dto.setApprovedMemberCount(count);
+	    }
+	    return dto;
 	}
 
 
