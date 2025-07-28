@@ -1,14 +1,12 @@
 package com.example.demo.user.repository;
 
+import com.example.demo.user.entity.User;
+import com.example.demo.user.entity.User.provider;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.demo.user.entity.User;
-
-
 public interface UserRepository extends JpaRepository<User, Long> {
-	
-	Optional<User> findBySocialId(String socialId);
 
+    Optional<User> findBySocialIdAndSocialProvider(String socialId, provider socialProvider);
 }
-
