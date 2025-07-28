@@ -25,10 +25,8 @@ public class UserDTO {
 	Long userId;
 	String socialId;
 	String nickname;
-	String region;
-	Integer age;
+	String email;
 	String role;
 	provider socialProvider;
-	List<Message> sentMessages;
-	List<Message> receivedMessages;
+	String profileImage;
 }

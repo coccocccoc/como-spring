@@ -41,6 +41,9 @@ public class KakaoOAuthService {
         System.out.println("userInfo: " + userInfo);
         System.out.println("userInfo.getId(): " + userInfo.getId());
         System.out.println("userInfo.getNickname(): " + userInfo.getNickname());
+        
+        String email = userInfo.getEmail();
+        System.out.println("userInfo.getEmail(): " + email);
 
         // 3. 닉네임 null-safe 처리
         String nickname = userInfo.getNickname();
@@ -57,6 +60,8 @@ public class KakaoOAuthService {
             User newUser = User.builder()
                     .socialId(String.valueOf(userInfo.getId()))
                     .nickname(finalNickname)
+                    .email(email)                 // ✅ 추가
+                    .profileImage(null) 
                     .role("USER")
                     .socialProvider(provider.KAKAO)
                     .build();

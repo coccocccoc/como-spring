@@ -16,8 +16,10 @@ public interface UserService {
                 .userId(user.getUserId())
                 .socialId(user.getSocialId())
                 .nickname(user.getNickname())
+                .email(user.getEmail())
                 .role(user.getRole())
                 .socialProvider(user.getSocialProvider())
+                .profileImage(user.getProfileImage()) 
                 .build();
     }
 
@@ -26,8 +28,10 @@ public interface UserService {
         User.UserBuilder builder = User.builder()
             .socialId(dto.getSocialId())
             .nickname(dto.getNickname())
+            .email(dto.getEmail())
             .role(dto.getRole())
-            .socialProvider(dto.getSocialProvider());
+            .socialProvider(dto.getSocialProvider())
+            .profileImage(dto.getProfileImage());
 
         if (dto.getUserId() != null) {
             builder.userId(dto.getUserId());
@@ -35,6 +39,12 @@ public interface UserService {
 
         return builder.build();
     }
+    
+    //프로필 이미지 수정
+    void updateProfileImage(Long userId, String imageData);
+    
+    // 이메일 수정
+    void updateEmail(Long userId, String email);
 
     // 전체 회원 목록 (페이징)
     Page<UserDTO> getList(int page);

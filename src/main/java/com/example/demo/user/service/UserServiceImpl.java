@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.example.demo.message.dto.MessageDTO;
 import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.entity.User;
-import com.example.demo.user.entity.User.provider;
 import com.example.demo.user.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -83,4 +82,24 @@ public class UserServiceImpl implements UserService {
                 .sentAt(message.getSentAt())
                 .build();
     }
+
+    @Override
+    @Transactional
+    public void updateProfileImage(Long userId, String imageData) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+        user.setProfileImage(imageData);
+        userRepository.save(user);
+    }
+    
+    @Override
+    @Transactional
+    public void updateEmail(Long userId, String email) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+
+        user.setEmail(email);
+        userRepository.save(user);
+    }
+
 }
