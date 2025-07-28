@@ -8,13 +8,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.multipart.MultipartFile;
+import com.example.demo.util.FileUtil;
+import com.example.demo.util.S3FileUtil;
 import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.entity.User;
 import com.example.demo.user.repository.UserRepository;
@@ -32,6 +35,9 @@ public class UserController {
     
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	S3FileUtil fileUtil;
 
 	@GetMapping("/me")
 	public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal User user) {
@@ -54,15 +60,15 @@ public class UserController {
 
 
 
-    @PatchMapping("/update-image")
-    public ResponseEntity<?> updateProfileImage(@AuthenticationPrincipal User userPrincipal,
-                                                @RequestBody Map<String, String> request) {
-        User user = userRepository.findById(userPrincipal.getUserId())
-                        .orElseThrow(() -> new RuntimeException("사용자 없음"));
-        user.setProfileImage(request.get("profileImage"));
-        userRepository.save(user);
-        return ResponseEntity.ok().build();
-    }
+//    @PatchMapping("/update-image")
+//    public ResponseEntity<?> updateProfileImage(@AuthenticationPrincipal User userPrincipal,
+//                                                @RequestBody Map<String, String> request) {
+//        User user = userRepository.findById(userPrincipal.getUserId())
+//                        .orElseThrow(() -> new RuntimeException("사용자 없음"));
+//        user.setProfileImage(request.get("profileImage"));
+//        userRepository.save(user);
+//        return ResponseEntity.ok().build();
+//    }
     
     @PatchMapping("/update-email")
     public ResponseEntity<?> updateEmail(@AuthenticationPrincipal User userPrincipal,
@@ -79,7 +85,7 @@ public class UserController {
     
     @PatchMapping("/update-profile")
     public ResponseEntity<?> updateProfile(@AuthenticationPrincipal User userPrincipal,
-                                           @RequestBody UserDTO dto) {
+    		@ModelAttribute UserDTO dto) {
 
         // 닉네임 수정
         if (dto.getNickname() != null && !dto.getNickname().isBlank()) {
@@ -95,14 +101,12 @@ public class UserController {
         }
 
         // 프로필 이미지 수정
-        if (dto.getProfileImage() != null) {
-            User user = userRepository.findById(userPrincipal.getUserId())
-                    .orElseThrow(() -> new RuntimeException("사용자 없음"));
-            user.setProfileImage(dto.getProfileImage());
-            userRepository.save(user);
-            System.out.println("📦 profileImage: " + dto.getProfileImage());
+        MultipartFile file = dto.getUploadFile();
+        if (file != null && !file.isEmpty()) {
+            String s3Url = fileUtil.fileUpload(file); // ✅ 이걸 imgPath로 저장
+            dto.setImgPath(s3Url);
+            userService.updateProfileImage(userPrincipal.getUserId(), s3Url); 
         }
-
         return ResponseEntity.ok().build();
     }
 

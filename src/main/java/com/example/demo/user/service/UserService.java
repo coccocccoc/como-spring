@@ -19,7 +19,7 @@ public interface UserService {
                 .email(user.getEmail())
                 .role(user.getRole())
                 .socialProvider(user.getSocialProvider())
-                .profileImage(user.getProfileImage()) 
+                .imgPath(user.getImgPath())  // 수정됨
                 .build();
     }
 
@@ -31,7 +31,7 @@ public interface UserService {
             .email(dto.getEmail())
             .role(dto.getRole())
             .socialProvider(dto.getSocialProvider())
-            .profileImage(dto.getProfileImage());
+            .imgPath(dto.getImgPath()); // 수정됨
 
         if (dto.getUserId() != null) {
             builder.userId(dto.getUserId());
@@ -41,7 +41,7 @@ public interface UserService {
     }
     
     //프로필 이미지 수정
-    void updateProfileImage(Long userId, String imageData);
+    void updateProfileImage(Long userId, String imgPath);
     
     // 이메일 수정
     void updateEmail(Long userId, String email);

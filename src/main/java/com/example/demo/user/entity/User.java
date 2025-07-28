@@ -42,8 +42,8 @@ public class User {
 		KAKAO, GOOGLE, NAVER
 	}
 
-	@Column(nullable = true, columnDefinition = "TEXT")
-	String profileImage;
+	 @Column(length = 200, nullable = true)
+	String imgPath;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 20)

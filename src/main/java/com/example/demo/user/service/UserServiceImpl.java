@@ -85,10 +85,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateProfileImage(Long userId, String imageData) {
+    public void updateProfileImage(Long userId, String imgPath) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
-        user.setProfileImage(imageData);
+        user.setImgPath(imgPath);  // ✅ 수정된 부분
         userRepository.save(user);
     }
     

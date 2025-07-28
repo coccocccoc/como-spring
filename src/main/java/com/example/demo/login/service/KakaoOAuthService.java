@@ -61,7 +61,7 @@ public class KakaoOAuthService {
                     .socialId(String.valueOf(userInfo.getId()))
                     .nickname(finalNickname)
                     .email(email)                 // ✅ 추가
-                    .profileImage(null) 
+                    .imgPath(null) 
                     .role("USER")
                     .socialProvider(provider.KAKAO)
                     .build();
