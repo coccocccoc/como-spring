@@ -7,14 +7,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.StudyGroupMember.dto.StudyGroupMemberDTO;
-import com.example.demo.StudyGroupMember.service.ServiceGroupMemberService;
+import com.example.demo.StudyGroupMember.service.StudyGroupMemberService;
+
+// 가입 신청 관련 컨트롤러
 
 @RestController
 @RequestMapping("/api/studies")
 public class StudyGroupMemberController {
 
     @Autowired
-    ServiceGroupMemberService memberService;
+    StudyGroupMemberService memberService;
 
     @PostMapping("/apply")
     public String applyToStudyGroup(@RequestBody StudyGroupMemberDTO dto) {

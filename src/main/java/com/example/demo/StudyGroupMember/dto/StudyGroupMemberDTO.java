@@ -17,6 +17,7 @@ public class StudyGroupMemberDTO {
 	
 	int groupId;
     long userId;
+    String nickname;
     String applyTitle;
     String applyContent;
 

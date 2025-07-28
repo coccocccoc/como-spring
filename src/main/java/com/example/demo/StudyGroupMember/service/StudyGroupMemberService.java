@@ -7,11 +7,17 @@ import com.example.demo.StudyGroupMember.entity.StudyGroupMember;
 import com.example.demo.studygroup.entity.StudyGroup;
 import com.example.demo.user.entity.User;
 
-public interface ServiceGroupMemberService {
+public interface StudyGroupMemberService {
 	
 	void applyToStudyGroup(StudyGroupMemberDTO dto);
-	
-	List<StudyGroupMemberDTO> getPendingMembers(int groupId);
+		
+    List<StudyGroupMemberDTO> getPendingMembersByGroupId(int groupId);
+    
+    void approveMember(int memberId);
+    
+    void rejectMember(int memberId);
+    
+    public StudyGroupMemberDTO getApplication(int groupId, int userId);
 	
 	// Entity → DTO 변환
     default StudyGroupMemberDTO toDTO(StudyGroupMember entity) {
@@ -20,6 +26,7 @@ public interface ServiceGroupMemberService {
         return StudyGroupMemberDTO.builder()
                 .groupId(entity.getGroup().getId())
                 .userId(entity.getUser().getUserId())
+                .nickname(entity.getUser().getNickname())
                 .applyTitle(entity.getApplyTitle())
                 .applyContent(entity.getApplyContent())
                 .build();
