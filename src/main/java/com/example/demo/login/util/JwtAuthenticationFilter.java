@@ -27,6 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // ✅ 1. 토큰 추출
         String token = jwtTokenProvider.resolveToken(request);
+        System.out.println("🔥 JwtAuthenticationFilter 동작함, 추출된 토큰: " + token);
         System.out.println("🔐 요청에서 추출한 토큰: " + token);
 
         // ✅ 2. 토큰 검증

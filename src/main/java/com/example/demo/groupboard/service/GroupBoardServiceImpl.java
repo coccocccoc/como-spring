@@ -10,7 +10,9 @@ import com.example.demo.groupboard.dto.GroupBoardDTO;
 import com.example.demo.groupboard.entity.GroupBoard;
 import com.example.demo.groupboard.entity.GroupBoard.cat;
 import com.example.demo.groupboard.repository.GroupBoardRepository;
+import com.example.demo.studygroup.entity.StudyGroup;
 import com.example.demo.studygroup.repository.StudyGroupRepository;
+import com.example.demo.user.entity.User;
 import com.example.demo.user.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -30,16 +32,32 @@ public class GroupBoardServiceImpl implements GroupBoardService {
 	@Autowired
 	StudyGroupMemberRepository studyGroupMemberRepo;
 
-    @Override
-    public int registerGroupPost(GroupBoardDTO dto) {
-        int groupId = dto.getGroupId();
-        long userId = dto.getUserId();
+	@Override
+	public int registerGroupPost(GroupBoardDTO dto) {
+	    int groupId = dto.getGroupId();
+	    long userId = dto.getUserId();
 
-        validateUserMembership(groupId, userId);
+	    validateUserMembership(groupId, userId);
 
-        GroupBoard entity = toGroupBoardEntity(dto);
-        return groupBoardRepo.save(entity).getGroupPostId();
-    }
+	    // ✅ User & StudyGroup DB에서 조회
+	    User user = userRepo.findById(userId)
+	            .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+
+	    StudyGroup studyGroup = groupRepo.findById(groupId)
+	            .orElseThrow(() -> new IllegalArgumentException("해당 스터디 그룹이 존재하지 않습니다"));
+
+	    // ✅ Entity 변환
+	    GroupBoard entity = GroupBoard.builder()
+	            .title(dto.getTitle())
+	            .content(dto.getContent())
+	            .category(GroupBoard.cat.valueOf(dto.getCategory()))
+	            .userId(user)
+	            .studyGroup(studyGroup)
+	            .build();
+
+	    return groupBoardRepo.save(entity).getGroupPostId();
+	}
+
 
 	@Override
     public Page<GroupBoardDTO> getGroupPostsList(int groupId, Pageable pageable) {
