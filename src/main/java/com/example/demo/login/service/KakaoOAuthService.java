@@ -50,8 +50,16 @@ public class KakaoOAuthService {
         if (nickname == null || nickname.isBlank()) {
             nickname = "카카오사용자" + userInfo.getId();
         }
+        
         String finalNickname = nickname;
-
+        int suffix = 1;
+        while (userRepository.existsByNickname(finalNickname)) {
+            finalNickname = nickname + suffix++;
+        }
+        
+        String resolvedNickname = finalNickname;
+        
+        
         // 4. 사용자 저장 or 조회
         User user = userRepository.findBySocialIdAndSocialProvider(
                 String.valueOf(userInfo.getId()),
@@ -59,7 +67,7 @@ public class KakaoOAuthService {
         ).orElseGet(() -> {
             User newUser = User.builder()
                     .socialId(String.valueOf(userInfo.getId()))
-                    .nickname(finalNickname)
+                    .nickname(resolvedNickname)
                     .email(email)                 // ✅ 추가
                     .imgPath(null) 
                     .role("USER")

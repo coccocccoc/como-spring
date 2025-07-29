@@ -6,6 +6,7 @@ import com.example.demo.message.entity.Message;
 import com.example.demo.message.repository.MessageRepository;
 import com.example.demo.notification.entity.Notification;
 import com.example.demo.notification.repository.NotificationRepository;
+import com.example.demo.notification.service.NotificationService;
 import com.example.demo.user.entity.User;
 import com.example.demo.user.repository.UserRepository;
 
@@ -34,38 +35,34 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Autowired
     NotificationRepository notificationRepository;
+	
+	@Autowired
+	NotificationService notificationService;
 
     @Override
     public boolean sendMessage(MessageDTO dto) {
         try {
-            User sender = userRepository.findById(dto.getSenderId())
+            User sender = userRepository.findByNickname(dto.getSenderNickname())
                     .orElseThrow(() -> new RuntimeException("보내는 사용자 없음"));
-            User receiver = userRepository.findById(dto.getReceiverId())
+            User receiver = userRepository.findByNickname(dto.getReceiverNickname())
                     .orElseThrow(() -> new RuntimeException("받는 사용자 없음"));
 
-            Message message = messageRepository.save(Message.builder()
+            Message message = Message.builder()
                     .sender(sender)
                     .receiver(receiver)
                     .title(dto.getTitle())
                     .content(dto.getContent())
-                    .build());
-
-            Long messageId = message.getId();
-
-            // WebSocket 알림
-            String notify = "✉️ " + sender.getNickname() + "님에게 쪽지가 도착했습니다.";
-            
-            Notification notification = Notification.builder()
-                    .user(receiver)             // 알림 수신자
-                    .content(notify)            // 알림 내용
-                    .type("message")            // 알림 유형
-                    .targetId(messageId)
                     .build();
-            notificationRepository.save(notification);
-            
-            System.out.println("쪽지 전송 완료. WebSocket 알림 전송 시작.");
-            messagingTemplate.convertAndSend("/topic/notifications/" + receiver.getUserId(), notify);
 
+            Message saved = messageRepository.save(message);
+
+            // 알림 전송 (userId 기준 WebSocket 사용)
+            notificationService.sendNotification(
+                    receiver.getUserId(),
+                    "✉️ " + sender.getNickname() + "님으로부터 쪽지가 도착했습니다.",
+                    "message",
+                    saved.getId()
+            );
 
             return true;
         } catch (Exception e) {
@@ -73,6 +70,7 @@ public class MessageServiceImpl implements MessageService {
             return false;
         }
     }
+
 
 	@Override
 	@Transactional

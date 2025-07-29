@@ -35,17 +35,13 @@ public class Message {
     @Column(nullable = false, length = 100)
      String title; // 메시지 제목
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false,  columnDefinition = "TEXT")
      String content; // 메시지 내용
 
     @Column(nullable = false)
     @CreatedDate
      LocalDateTime sentAt; // 발송 시간
 
-    @PrePersist
-     void onCreate() {
-        this.sentAt = LocalDateTime.now();
-    }
 }
 
 //@Id

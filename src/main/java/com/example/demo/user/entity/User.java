@@ -29,7 +29,7 @@ public class User {
 	@Column(nullable = false, length = 100)
 	String socialId;
 
-	@Column(nullable = true, length = 20)
+	@Column(nullable = true, length = 20, unique = true)
 	String nickname;
 	
 	@Column(nullable = true, length = 20)
