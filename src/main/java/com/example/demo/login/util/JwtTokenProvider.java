@@ -14,10 +14,12 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 import java.util.Base64;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.example.demo.user.entity.User;
 import com.example.demo.user.repository.UserRepository;
@@ -62,6 +64,7 @@ public class JwtTokenProvider {
     }
     
     public Long extractUserId(String token) {
+    	System.out.println("🔍 받은 Authorization 헤더: " + token);
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
@@ -71,6 +74,7 @@ public class JwtTokenProvider {
             .parseClaimsJws(token)
             .getBody();
 
+        System.out.println("✅ 파싱된 사용자 ID: " + claims.getSubject());
         return Long.parseLong(claims.getSubject()); // subject에 userId가 저장되어 있다고 가정
     }
     
@@ -99,6 +103,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         Long userId = Long.valueOf(getUserId(token));
         User user = userRepository.findById(userId).orElseThrow();
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         return new UsernamePasswordAuthenticationToken(user, "", null);
     }
 }

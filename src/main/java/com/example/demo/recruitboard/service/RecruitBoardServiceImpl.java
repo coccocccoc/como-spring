@@ -170,13 +170,11 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 	@Override
 	public List<RecruitBoardDTO> getMyCreatedStudies(Long userId) {
 	    List<RecruitBoard> boards = recruitBoardRepo.findByWriter_UserId(userId);
+
 	    return boards.stream()
-	    	    .filter(rb -> rb.getStudyGroup() != null)
-	    	    .map(rb -> (RecruitBoardDTO.builder()
-	    	    	    .recruitPostId(rb.getRecruitPostId())
-	    	    	    .regDate(rb.getRegDate())
-	    	    	    .build()))
-	    	    .collect(Collectors.toList());
+	        .filter(rb -> rb.getStudyGroup() != null) // null 그룹 제거
+	        .map(this::toRecruitBoardDTO) // 기존에 만들어둔 변환 메서드 사용
+	        .collect(Collectors.toList());
 	}
 
 
