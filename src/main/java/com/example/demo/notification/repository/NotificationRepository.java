@@ -8,6 +8,8 @@ import com.example.demo.notification.entity.Notification;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 	
+	List<Notification> findByUser_Nickname(String nickname);
+
 	List<Notification> findByUser_userId(Long userId);
 	
 }

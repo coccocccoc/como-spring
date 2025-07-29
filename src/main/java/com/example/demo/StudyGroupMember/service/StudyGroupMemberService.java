@@ -26,6 +26,8 @@ public interface StudyGroupMemberService {
     
     int countApprovedMembers(int groupId);
     
+    boolean requestJoinGroup(int groupId, long userId);
+    
     List<StudyGroupDTO> getMyEndedStudies(Long userId);
 	
 	// Entity → DTO 변환

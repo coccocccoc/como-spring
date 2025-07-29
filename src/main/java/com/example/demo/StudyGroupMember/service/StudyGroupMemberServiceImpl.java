@@ -178,6 +178,34 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
             .status(group.getStatus().name())
             .build();
     }
+    
+    @Override
+    public boolean requestJoinGroup(int groupId, long userId) {
+        StudyGroup group = groupRepo.findById(groupId)
+            .orElseThrow(() -> new RuntimeException("스터디 그룹이 존재하지 않습니다."));
+        User user = userRepo.findById(userId)
+            .orElseThrow(() -> new RuntimeException("신청자 정보 없음"));
+
+        StudyGroupMember member = StudyGroupMember.builder()
+            .group(group)
+            .user(user)
+            .joinStatus(StudyGroupMember.status.승인대기중)
+            .build();
+        memberRepo.save(member);
+
+        User creator = group.getCreatedBy();
+        String content = "📢 " + user.getNickname() + "님이 '" + group.getId() + "'번 스터디에 가입 신청했습니다.";
+
+        notificationService.sendNotification(
+            creator.getUserId(),
+            content,
+            "studyJoin",
+            (long) groupId
+        );
+
+        return true;
+    }
+
 
 
 }

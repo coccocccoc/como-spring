@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.example.demo.util.FileUtil;
 import com.example.demo.util.S3FileUtil;
 import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.entity.User;
@@ -75,14 +74,12 @@ public class UserController {
 	}
 
     
-    @PatchMapping("/update-nickname")
-    public ResponseEntity<?> updateNickname(@AuthenticationPrincipal User userPrincipal,
-                                            @RequestBody Map<String, String> request) {
-        String newNickname = request.get("nickname");
+	@GetMapping("/check-nickname")
+	public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
+	    boolean exists = userRepository.existsByNickname(nickname);
+	    return ResponseEntity.ok(Map.of("duplicate", exists));
+	}
 
-        userRepository.updateNickname(userPrincipal.getUserId(), newNickname); // 💡 직접 업데이트 쿼리 실행
-        return ResponseEntity.ok().build();
-    }
 
 
 
@@ -112,10 +109,21 @@ public class UserController {
     
     @PatchMapping("/update-profile")
     public ResponseEntity<?> updateProfile(@AuthenticationPrincipal User userPrincipal,
-    		@ModelAttribute UserDTO dto) {
+                                           @ModelAttribute UserDTO dto) {
 
         // 닉네임 수정
         if (dto.getNickname() != null && !dto.getNickname().isBlank()) {
+            // 자기 자신의 닉네임은 중복으로 보지 않기
+            User currentUser = userRepository.findById(userPrincipal.getUserId())
+                    .orElseThrow(() -> new RuntimeException("사용자 없음"));
+
+            if (!currentUser.getNickname().equals(dto.getNickname()) &&
+                    userRepository.existsByNickname(dto.getNickname())) {
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body("이미 사용 중인 닉네임입니다.");
+            }
+
             userRepository.updateNickname(userPrincipal.getUserId(), dto.getNickname());
         }
 
@@ -130,10 +138,11 @@ public class UserController {
         // 프로필 이미지 수정
         MultipartFile file = dto.getUploadFile();
         if (file != null && !file.isEmpty()) {
-            String s3Url = fileUtil.fileUpload(file); // ✅ 이걸 imgPath로 저장
+            String s3Url = fileUtil.fileUpload(file);
             dto.setImgPath(s3Url);
-            userService.updateProfileImage(userPrincipal.getUserId(), s3Url); 
+            userService.updateProfileImage(userPrincipal.getUserId(), s3Url);
         }
+
         return ResponseEntity.ok().build();
     }
 
