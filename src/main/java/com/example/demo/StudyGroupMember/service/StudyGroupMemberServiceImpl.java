@@ -11,6 +11,7 @@ import com.example.demo.StudyGroupMember.dto.StudyGroupMemberDTO;
 import com.example.demo.StudyGroupMember.entity.StudyGroupMember;
 import com.example.demo.StudyGroupMember.entity.StudyGroupMember.status;
 import com.example.demo.StudyGroupMember.repository.StudyGroupMemberRepository;
+import com.example.demo.notification.service.NotificationService;
 import com.example.demo.studygroup.dto.StudyGroupDTO;
 import com.example.demo.studygroup.entity.StudyGroup;
 import com.example.demo.studygroup.repository.StudyGroupRepository;
@@ -28,6 +29,9 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
 
     @Autowired
     UserRepository userRepo;
+    
+    @Autowired
+    NotificationService notificationService;
 
     @Override
     public void applyToStudyGroup(StudyGroupMemberDTO dto) {
@@ -60,6 +64,16 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
                 .build();
 
         memberRepo.save(member);
+        
+        // 스터디장에게 알림 전송
+        User leader = group.getCreatedBy(); // 스터디장
+        String content = user.getNickname() + "님이 [" + group.getRecruitBoard().getTitle() + "] 스터디에 가입 신청했습니다.";
+        notificationService.sendNotification(
+            leader.getUserId(),
+            content,
+            "application", // 타입
+            (long) group.getId() // 스터디 그룹 ID
+        );
     }
 
 
