@@ -2,6 +2,8 @@ package com.example.demo.user.dto;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.demo.message.entity.Message;
 import com.example.demo.user.entity.User.provider;
 
@@ -25,10 +27,10 @@ public class UserDTO {
 	Long userId;
 	String socialId;
 	String nickname;
-	String region;
-	Integer age;
+	String email;
 	String role;
 	provider socialProvider;
-	List<Message> sentMessages;
-	List<Message> receivedMessages;
+	MultipartFile uploadFile; // 파일 스트림
+
+	String imgPath;
 }
