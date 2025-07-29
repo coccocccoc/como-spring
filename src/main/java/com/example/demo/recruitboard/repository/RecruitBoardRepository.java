@@ -13,5 +13,4 @@ public interface RecruitBoardRepository extends JpaRepository<RecruitBoard, Inte
 	
 	List<RecruitBoard> findByWriter_UserId(Long userId);
 
-	
 }

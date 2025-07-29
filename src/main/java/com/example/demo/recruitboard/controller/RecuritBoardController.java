@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.demo.login.util.JwtTokenProvider;
 import com.example.demo.recruitboard.dto.RecruitBoardDTO;
 import com.example.demo.recruitboard.service.RecruitBoardService;
 
@@ -16,6 +17,9 @@ public class RecuritBoardController {
 
 	@Autowired
 	RecruitBoardService recruitBoardService;
+	
+	@Autowired
+	JwtTokenProvider jwtTokenProvider;
 
 	// 1. 모집글 등록
 	@PostMapping
@@ -63,6 +67,15 @@ public class RecuritBoardController {
 	    RecruitBoardDTO dto = recruitBoardService.getRecruitBoardByGroupId(groupId);
 	    return ResponseEntity.ok(dto);
 	}
+	
+	
+	@GetMapping("/my-created")
+	public ResponseEntity<List<RecruitBoardDTO>> getMyStudies(@RequestHeader("Authorization") String token) {
+	    Long userId = jwtTokenProvider.extractUserId(token);
+	    return ResponseEntity.ok(recruitBoardService.getMyCreatedStudies(userId));
+	}
+
+
 	
 	
 }

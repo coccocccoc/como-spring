@@ -28,32 +28,35 @@ public class MyPostServiceImpl implements MyPostService {
 	    List<MyPostDTO> result = new ArrayList<>();
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
-	    // ✅ 모집글 순회
+	    // ✅ 모집글
 	    List<RecruitBoard> recruitBoards = recruitBoardRepository.findByWriter_UserId(userId);
 	    for (RecruitBoard rb : recruitBoards) {
 	        result.add(MyPostDTO.builder()
-	        	.postId(rb.getRecruitPostId())
+	            .postId(rb.getRecruitPostId())
+	            .groupId(rb.getStudyGroup().getId())
 	            .title(rb.getTitle())
 	            .nickname(rb.getWriter().getNickname())
 	            .createdDate(rb.getRegDate().format(formatter))
-	            .type("모집글")
+	            .type("recruit")
+	            .url("/studies/detail/" + rb.getRecruitPostId()) // ✅ URL 지정
 	            .build());
 	    }
 
-	    // ✅ 그룹 게시판 글 순회 (예시)
+	    // ✅ 그룹글
 	    List<GroupBoard> groupBoards = groupBoardRepository.findByUserId_UserId(userId);
 	    for (GroupBoard gb : groupBoards) {
 	        result.add(MyPostDTO.builder()
-	        	.postId(gb.getGroupPostId())
+	            .postId(gb.getGroupPostId())
+	            .groupId(gb.getStudyGroup().getId())
 	            .title(gb.getTitle())
 	            .nickname(gb.getUserId().getNickname())
 	            .createdDate(gb.getRegDate().format(formatter))
-	            .type("그룹글")
+	            .type("group")
+	            .url("/group-board/" + gb.getStudyGroup().getId() + "/post/" + gb.getGroupPostId())
 	            .build());
 	    }
 
 	    return result;
+
 	}
-
-
 }

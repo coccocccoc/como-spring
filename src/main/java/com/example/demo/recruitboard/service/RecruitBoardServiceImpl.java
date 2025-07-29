@@ -117,7 +117,6 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 	    return toRecruitBoardDTO(board);
 	}
 
-    // 모집글 삭제
 	@Override
 	@Transactional
 	public void deleteRecruitBoard(int recruitPostId, int requesterId) throws AccessDeniedException {
@@ -128,6 +127,20 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 	    if (board.getWriter().getUserId() != requesterId) {
 	        throw new AccessDeniedException("작성자만 삭제할 수 있습니다.");
 	    }
+
+	    // 🔥 연관된 StudyGroup 및 StudyGroupMembers 먼저 제거
+	    StudyGroup group = board.getStudyGroup();
+	    if (group != null) {
+	        // 스터디 그룹 멤버들 먼저 삭제
+	        List<StudyGroupMember> members = studyGroupMemberRepo.findByGroup_Id(group.getId());
+	        studyGroupMemberRepo.deleteAll(members);
+
+	        // 스터디 그룹 삭제 (CascadeType.ALL로 인해 RecruitBoard와 함께 삭제될 수도 있음)
+	        group.setRecruitBoard(null); // 순환참조 방지
+	    }
+
+	    board.setStudyGroup(null); // 역참조 제거
+	    board.setTechStacks(null); // 기술 스택도 끊어주자
 
 	    recruitBoardRepo.delete(board);
 	}
@@ -154,6 +167,17 @@ public class RecruitBoardServiceImpl implements RecruitBoardService {
 	    return dto;
 	}
 
+	@Override
+	public List<RecruitBoardDTO> getMyCreatedStudies(Long userId) {
+	    List<RecruitBoard> boards = recruitBoardRepo.findByWriter_UserId(userId);
+	    return boards.stream()
+	    	    .filter(rb -> rb.getStudyGroup() != null)
+	    	    .map(rb -> (RecruitBoardDTO.builder()
+	    	    	    .recruitPostId(rb.getRecruitPostId())
+	    	    	    .regDate(rb.getRegDate())
+	    	    	    .build()))
+	    	    .collect(Collectors.toList());
+	}
 
 
 }

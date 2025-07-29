@@ -27,6 +27,9 @@ public interface RecruitBoardService {
     
     // 서비스 인터페이스
     RecruitBoardDTO getRecruitBoardByGroupId(int groupId);
+    
+    // 내가 만든 스터디(모집글 작성자 = 스터디 생성자) 조회
+    List<RecruitBoardDTO> getMyCreatedStudies(Long userId);
 
     
     default RecruitBoardDTO toRecruitBoardDTO(RecruitBoard entity) {
