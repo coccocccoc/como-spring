@@ -37,8 +37,9 @@ public class MessageController {
     }
     
     @GetMapping("/sent/{senderId}")
-    public ResponseEntity<List<MessageDTO>> getSentMessages(@PathVariable Long senderId) {
+    public ResponseEntity<List<MessageDTO>> getSentMessages(@PathVariable("senderId") Long senderId) {
         List<MessageDTO> messages = messageService.getSentMessages(senderId);
         return ResponseEntity.ok(messages);
     }
+
 }
