@@ -14,9 +14,9 @@ public interface StudyGroupMemberService {
 		
     List<StudyGroupMemberDTO> getPendingMembersByGroupId(int groupId);
     
-    void approveMember(int memberId);
+    void approveMember(Long userId, int groupId);
     
-    void rejectMember(int memberId);
+    void rejectMember(Long userId, int groupId);
     
     public StudyGroupMemberDTO getApplication(int groupId, int userId);
     

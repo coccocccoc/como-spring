@@ -17,6 +17,7 @@ import lombok.ToString;
 @Builder
 public class StudyGroupMemberDTO {
 	
+	int memberId; // ✅ 추가: DB에서 식별자
 	int groupId;
     long userId;
     String nickname;
@@ -25,15 +26,16 @@ public class StudyGroupMemberDTO {
     StudyGroupMember.status joinStatus;
 
     
-    public StudyGroupMemberDTO fromEntity(StudyGroupMember member) {
-        StudyGroupMemberDTO dto = new StudyGroupMemberDTO();
-        dto.setGroupId(member.getGroup().getId());
-        dto.setUserId(member.getUser().getUserId());
-        dto.setNickname(member.getUser().getNickname());
-        dto.setApplyTitle(member.getApplyTitle());
-        dto.setApplyContent(member.getApplyContent());
-        dto.setJoinStatus(member.getJoinStatus());
-        return dto;
+    public static StudyGroupMemberDTO fromEntity(StudyGroupMember member) {
+        return StudyGroupMemberDTO.builder()
+            .memberId(member.getId()) // ✅ 추가
+            .groupId(member.getGroup().getId())
+            .userId(member.getUser().getUserId())
+            .nickname(member.getUser().getNickname())
+            .applyTitle(member.getApplyTitle())
+            .applyContent(member.getApplyContent())
+            .joinStatus(member.getJoinStatus())
+            .build();
     }
 
 

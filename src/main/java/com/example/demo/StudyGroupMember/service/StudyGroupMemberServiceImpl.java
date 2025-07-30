@@ -88,38 +88,45 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
                 .collect(Collectors.toList());
     }
 
+    
+    
+    
+    
+    
     @Override
-    public void approveMember(int memberId) {
-        StudyGroupMember member = memberRepo.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
-        System.out.println("🧪 기존 상태: " + member.getJoinStatus());
+    public void approveMember(Long userId, int groupId) {
+        StudyGroupMember member = memberRepo
+            .findByUser_UserIdAndGroup_Id(userId, groupId)
+            .orElseThrow(() -> new RuntimeException("해당 멤버를 찾을 수 없습니다."));
+
+        System.out.println("✅ 기존 상태: " + member.getJoinStatus());
         member.setJoinStatus(StudyGroupMember.status.가입);
         System.out.println("✅ 변경 후 상태: " + member.getJoinStatus());
-        memberRepo.saveAndFlush(member);
-        
-        // 가입 승인된 유저에게 알림 전송
+
+        memberRepo.save(member);
+
+        // 알림 전송 로직 유지
         User user = member.getUser();
         StudyGroup group = member.getGroup();
-        System.out.println("✅ 승인된 사용자 ID: " + user.getUserId());
-        System.out.println("📌 스터디장 ID: " + group.getCreatedBy().getUserId());
 
         String content = "🎉 '" + group.getRecruitBoard().getTitle() + "' 스터디에 가입이 승인되었습니다!";
         notificationService.sendNotification(
-            user.getUserId(),            // 받는 사람
-            content,                     // 알림 내용
-            "studyJoinApproved",         // 알림 타입
-            (long) group.getId()         // 관련 스터디 ID
-        );
+        	    user.getUserId(),              // 대상 유저 ID
+        	    content,                       // 알림 내용
+        	    "studyJoinApproved",          // 알림 타입 (문자열로 구분)
+        	    (long) group.getId()          // 관련된 스터디 그룹 ID
+        	);
     }
 
     @Override
-    public void rejectMember(int memberId) {
-        StudyGroupMember member = memberRepo.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
-        member.setJoinStatus(StudyGroupMember.status.미가입);  // 또는 삭제도 가능
+    public void rejectMember(Long userId, int groupId) {
+        StudyGroupMember member = memberRepo
+            .findByUser_UserIdAndGroup_Id(userId, groupId)
+            .orElseThrow(() -> new RuntimeException("해당 멤버를 찾을 수 없습니다."));
+
+        member.setJoinStatus(StudyGroupMember.status.미가입);
         memberRepo.save(member);
-        
-        // 알림 전송 - 가입 거절됨
+
         User user = member.getUser();
         StudyGroup group = member.getGroup();
 
@@ -127,10 +134,23 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
         notificationService.sendNotification(
             user.getUserId(),
             content,
-            "studyJoinRejected",   // 알림 타입 구분용
+            "studyJoinRejected",
             (long) group.getId()
         );
+
     }
+
+    
+ 
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     @Override
     public StudyGroupMemberDTO getApplication(int groupId, int userId) {

@@ -28,6 +28,6 @@ public interface StudyGroupMemberRepository extends JpaRepository<StudyGroupMemb
 	// ✅ 특정 그룹의 모든 멤버 조회 (삭제할 때 필요)
     List<StudyGroupMember> findByGroup_Id(int groupId);
 
-//    Optional<StudyGroupMember> findByGroup_IdAndUser_Id(int groupId, long userId);
+    Optional<StudyGroupMember> findByUser_UserIdAndGroup_Id(Long userId, int groupId);
 
 }

@@ -43,30 +43,36 @@ public class StudyGroupMemberApprovalController {
     }
 
     // 승인
-    @PostMapping("/approve/{memberId}")
-    public ResponseEntity<Void> approveMember(@PathVariable("memberId") int memberId, HttpServletRequest request){
-        Long userId = jwtTokenProvider.getUserIdFromToken(request);
-        int groupId = memberService.getGroupIdByMemberId(memberId);
+    @PostMapping("/approve")
+    public ResponseEntity<Void> approveMember(
+            @RequestParam("userId") Long userId,
+            @RequestParam("groupId") int groupId,
+            HttpServletRequest request) {
 
-        if (!memberService.isGroupLeader(groupId, userId)) {
-            return ResponseEntity.status(403).build(); // 인가되지 않은 사용자
+        Long requesterId = jwtTokenProvider.getUserIdFromToken(request);
+
+        if (!memberService.isGroupLeader(groupId, requesterId)) {
+            return ResponseEntity.status(403).build();
         }
 
-        memberService.approveMember(memberId);
+        memberService.approveMember(userId, groupId);
         return ResponseEntity.ok().build();
     }
 
     // 거절
-    @PostMapping("/reject/{memberId}")
-    public ResponseEntity<Void> rejectMember(@PathVariable("memberId") int memberId, HttpServletRequest request){
-        Long userId = jwtTokenProvider.getUserIdFromToken(request);
-        int groupId = memberService.getGroupIdByMemberId(memberId);
+    @PostMapping("/reject")
+    public ResponseEntity<Void> rejectMember(
+            @RequestParam("userId") Long userId,
+            @RequestParam("groupId") int groupId,
+            HttpServletRequest request) {
 
-        if (!memberService.isGroupLeader(groupId, userId)) {
+        Long requesterId = jwtTokenProvider.getUserIdFromToken(request);
+
+        if (!memberService.isGroupLeader(groupId, requesterId)) {
             return ResponseEntity.status(403).build();
         }
 
-        memberService.rejectMember(memberId);
+        memberService.rejectMember(userId, groupId);
         return ResponseEntity.ok().build();
     }
 
