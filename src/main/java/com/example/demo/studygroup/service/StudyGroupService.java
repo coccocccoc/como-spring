@@ -13,6 +13,7 @@ public interface StudyGroupService {
 
 	    return StudyGroupDTO.builder()
 	        .groupId(group.getId())
+	        .creatorId(group.getCreatedBy().getUserId())
 	        .title(group.getRecruitBoard().getTitle())
 	        .content(group.getRecruitBoard().getContent())
 	        .nickname(group.getCreatedBy().getNickname())

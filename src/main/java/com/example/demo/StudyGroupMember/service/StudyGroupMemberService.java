@@ -29,6 +29,11 @@ public interface StudyGroupMemberService {
     boolean requestJoinGroup(int groupId, long userId);
     
     List<StudyGroupDTO> getMyEndedStudies(Long userId);
+    
+    int getGroupIdByMemberId(int memberId);
+
+    boolean isGroupLeader(int groupId, Long userId);
+
 	
 	// Entity → DTO 변환
     default StudyGroupMemberDTO toDTO(StudyGroupMember entity) {

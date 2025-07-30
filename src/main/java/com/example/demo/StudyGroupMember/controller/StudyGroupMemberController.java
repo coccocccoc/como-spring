@@ -37,10 +37,23 @@ public class StudyGroupMemberController {
     JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/apply")
-    public String applyToStudyGroup(@RequestBody StudyGroupMemberDTO dto) {
+    public ResponseEntity<String> applyToStudyGroup(
+            @RequestBody StudyGroupMemberDTO dto,
+            HttpServletRequest request
+    ) {
+        String token = request.getHeader("Authorization");
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT 토큰이 없습니다.");
+        }
+
+        token = token.substring(7);
+        Long userId = Long.parseLong(jwtTokenProvider.getUserIdFromToken(token));
+
+        dto.setUserId(userId); // ✅ 토큰에서 추출한 userId 주입
         memberService.applyToStudyGroup(dto);
-        return "신청이 완료되었습니다.";
+        return ResponseEntity.ok("신청이 완료되었습니다.");
     }
+
     
     @GetMapping("/my")
     public List<StudyGroupDTO> getMyStudies(HttpServletRequest request) {

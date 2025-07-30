@@ -77,6 +77,6 @@ public class RecuritBoardController {
 
 
 	
-	
+	//
 }
 

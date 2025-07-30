@@ -18,7 +18,10 @@ import com.example.demo.studygroup.repository.StudyGroupRepository;
 import com.example.demo.user.entity.User;
 import com.example.demo.user.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
 	
 	@Autowired
@@ -67,7 +70,7 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
         
         // 스터디장에게 알림 전송
         User leader = group.getCreatedBy(); // 스터디장
-        String content = user.getNickname() + "님이 [" + group.getRecruitBoard().getTitle() + "] 스터디에 가입 신청했습니다.";
+        String content = user.getNickname() + "님이 [" + group.getRecruitBoard().getTitle() + "] 스터디에 가입을 신청했습니다.";
         notificationService.sendNotification(
             leader.getUserId(),
             content,
@@ -89,8 +92,24 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
     public void approveMember(int memberId) {
         StudyGroupMember member = memberRepo.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
+        System.out.println("🧪 기존 상태: " + member.getJoinStatus());
         member.setJoinStatus(StudyGroupMember.status.가입);
-        memberRepo.save(member);
+        System.out.println("✅ 변경 후 상태: " + member.getJoinStatus());
+        memberRepo.saveAndFlush(member);
+        
+        // 가입 승인된 유저에게 알림 전송
+        User user = member.getUser();
+        StudyGroup group = member.getGroup();
+        System.out.println("✅ 승인된 사용자 ID: " + user.getUserId());
+        System.out.println("📌 스터디장 ID: " + group.getCreatedBy().getUserId());
+
+        String content = "🎉 '" + group.getRecruitBoard().getTitle() + "' 스터디에 가입이 승인되었습니다!";
+        notificationService.sendNotification(
+            user.getUserId(),            // 받는 사람
+            content,                     // 알림 내용
+            "studyJoinApproved",         // 알림 타입
+            (long) group.getId()         // 관련 스터디 ID
+        );
     }
 
     @Override
@@ -99,6 +118,18 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
         member.setJoinStatus(StudyGroupMember.status.미가입);  // 또는 삭제도 가능
         memberRepo.save(member);
+        
+        // 알림 전송 - 가입 거절됨
+        User user = member.getUser();
+        StudyGroup group = member.getGroup();
+
+        String content = "😢 '" + group.getRecruitBoard().getTitle() + "' 스터디 가입 신청이 거절되었습니다.";
+        notificationService.sendNotification(
+            user.getUserId(),
+            content,
+            "studyJoinRejected",   // 알림 타입 구분용
+            (long) group.getId()
+        );
     }
     
     @Override
@@ -142,6 +173,22 @@ public class StudyGroupMemberServiceImpl implements StudyGroupMemberService {
     }
 
 
+    @Override
+    public int getGroupIdByMemberId(int memberId) {
+        StudyGroupMember member = memberRepo.findById(memberId)
+            .orElseThrow(() -> new RuntimeException("해당 멤버를 찾을 수 없습니다."));
+        return member.getGroup().getId();
+    }
+
+    @Override
+    public boolean isGroupLeader(int groupId, Long userId) {
+        StudyGroup group = groupRepo.findById(groupId)
+            .orElseThrow(() -> new RuntimeException("스터디 그룹을 찾을 수 없습니다."));
+        return group.getCreatedBy().getUserId() == userId;
+    }
+
+    
+    
 
 
     @Override

@@ -106,4 +106,10 @@ public class JwtTokenProvider {
         List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         return new UsernamePasswordAuthenticationToken(user, "", null);
     }
+    
+    public Long getUserIdFromToken(HttpServletRequest request) {
+        String token = resolveToken(request);
+        return Long.parseLong(getUserId(token));
+    }
+
 }

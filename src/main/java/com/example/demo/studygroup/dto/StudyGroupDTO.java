@@ -20,6 +20,7 @@ import lombok.ToString;
 public class StudyGroupDTO {
 
     private int groupId;
+    private Long creatorId;
     private String title;
     private String content;
     private String nickname;
@@ -34,4 +35,12 @@ public class StudyGroupDTO {
     private List<String> techStackNames;
 
     private String status; // 모집중, 활동중 등
+    
+    public StudyGroupDTO(int id, String title, long creatorId) {
+        this.groupId = id;
+        this.title = title;
+        this.creatorId = creatorId;
+    }
+
+    
 }

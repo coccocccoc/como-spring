@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/ws/**")).permitAll()
                 .requestMatchers(HttpMethod.GET, ("/api/studies/**")).permitAll()
                 .requestMatchers("/api/bookmarks/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/study-groups/**").authenticated()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)

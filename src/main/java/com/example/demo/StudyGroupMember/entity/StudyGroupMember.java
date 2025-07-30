@@ -51,7 +51,7 @@ public class StudyGroupMember {
     }
     
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 30)
+    @Column(name = "join_status", nullable = false, length = 30)
     status joinStatus;
 
     @Column(nullable = true, length = 225)

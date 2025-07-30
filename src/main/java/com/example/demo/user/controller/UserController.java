@@ -57,12 +57,14 @@ public class UserController {
 	@Autowired
 	S3FileUtil fileUtil;
 	
-    @GetMapping("/my-posts")
-    public List<MyPostDTO> getAllMyPosts(HttpServletRequest request) {
-        String token = request.getHeader("Authorization").substring(7);
-        Long userId = Long.parseLong(jwtTokenProvider.getUserIdFromToken(token));
-        return myPostService.getAllMyPosts(userId);
-    }
+	@GetMapping("/my-posts")
+	public ResponseEntity<List<MyPostDTO>> getAllMyPosts(@AuthenticationPrincipal User user) {
+	    if (user == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    }
+	    return ResponseEntity.ok(myPostService.getAllMyPosts(user.getUserId()));
+	}
+
     
 
 	@GetMapping("/me")
